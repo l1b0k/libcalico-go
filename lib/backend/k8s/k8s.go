@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"sync"
 
 	log "github.com/sirupsen/logrus"
@@ -304,10 +305,13 @@ func CreateKubernetesClientset(ca *apiconfig.CalicoAPIConfigSpec) (*rest.Config,
 		return nil, nil, resources.K8sErrorToCalico(err, nil)
 	}
 
+	config.AcceptContentTypes = strings.Join([]string{runtime.ContentTypeProtobuf, runtime.ContentTypeJSON}, ",")
+	config.ContentType = runtime.ContentTypeProtobuf
 	// Overwrite the QPS if provided. Default QPS is 5.
 	if ca.K8sClientQPS != float32(0) {
 		config.QPS = ca.K8sClientQPS
 	}
+	config.UserAgent = "calico-felix"
 
 	// Create the clientset. We increase the burst so that the IPAM code performs
 	// efficiently. The IPAM code can create bursts of requests to the API, so

@@ -190,7 +190,9 @@ func (c *WorkloadEndpointClient) Get(ctx context.Context, key model.Key, revisio
 			Err:        errors.New("malformed WorkloadEndpoint name - unable to determine Pod name"),
 		}
 	}
-
+	if revision == "" {
+		revision = "0"
+	}
 	pod, err := c.clientSet.CoreV1().Pods(k.Namespace).Get(ctx, wepID.Pod, metav1.GetOptions{ResourceVersion: revision})
 	if err != nil {
 		return nil, K8sErrorToCalico(err, k)
@@ -244,7 +246,9 @@ func (c *WorkloadEndpointClient) listUsingName(ctx context.Context, listOptions 
 			Err:        errors.New("malformed WorkloadEndpoint name - unable to determine Pod name"),
 		}
 	}
-
+	if revision == "" {
+		revision = "0"
+	}
 	pod, err := c.clientSet.CoreV1().Pods(listOptions.Namespace).Get(ctx, wepID.Pod, metav1.GetOptions{ResourceVersion: revision})
 	if err != nil {
 		if kerrors.IsNotFound(err) {
@@ -291,6 +295,9 @@ func (c *WorkloadEndpointClient) listUsingName(ctx context.Context, listOptions 
 
 // list lists all the Workload endpoints for the namespace given in listOptions.
 func (c *WorkloadEndpointClient) list(ctx context.Context, listOptions model.ResourceListOptions, revision string) (*model.KVPairList, error) {
+	if revision == "" {
+		revision = "0"
+	}
 	podList, err := c.clientSet.CoreV1().Pods(listOptions.Namespace).List(ctx, metav1.ListOptions{ResourceVersion: revision})
 	if err != nil {
 		return nil, K8sErrorToCalico(err, listOptions)
