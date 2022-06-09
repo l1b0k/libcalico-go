@@ -30,6 +30,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/scheme"
 )
 
 // NewKubernetesEndpointSliceClient returns a new client for interacting with Kubernetes EndpointSlice objects.
@@ -95,7 +96,7 @@ func (c *endpointSliceClient) List(ctx context.Context, list model.ListInterface
 	endpointSlices := discovery.EndpointSliceList{}
 	req := c.clientSet.DiscoveryV1beta1().RESTClient().
 		Get().
-		Resource("endpointslices")
+		Resource("endpointslices").VersionedParams(&metav1.ListOptions{ResourceVersion: revision}, scheme.ParameterCodec)
 	err := req.Do(ctx).Into(&endpointSlices)
 	if err != nil {
 		log.WithError(err).Info("Unable to list K8s EndpointSlice resources")

@@ -618,6 +618,9 @@ func (c *KubeClient) Get(ctx context.Context, k model.Key, revision string) (*mo
 			Operation:  "Get",
 		}
 	}
+	if revision == "" {
+		revision = "0"
+	}
 	return client.Get(ctx, k, revision)
 }
 
@@ -632,6 +635,9 @@ func (c *KubeClient) List(ctx context.Context, l model.ListInterface, revision s
 			Identifier: l,
 			Operation:  "List",
 		}
+	}
+	if revision == "" {
+		revision = "0"
 	}
 	return client.List(ctx, l, revision)
 }

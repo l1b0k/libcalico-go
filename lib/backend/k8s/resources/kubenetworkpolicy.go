@@ -20,6 +20,7 @@ import (
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
+	"k8s.io/client-go/kubernetes/scheme"
 
 	"github.com/projectcalico/libcalico-go/lib/backend/api"
 	"github.com/projectcalico/libcalico-go/lib/backend/k8s/conversion"
@@ -95,7 +96,7 @@ func (c *networkPolicyClient) List(ctx context.Context, list model.ListInterface
 	networkPolicies := networkingv1.NetworkPolicyList{}
 	req := c.clientSet.NetworkingV1().RESTClient().
 		Get().
-		Resource("networkpolicies")
+		Resource("networkpolicies").VersionedParams(&metav1.ListOptions{ResourceVersion: revision}, scheme.ParameterCodec)
 	err := req.Do(ctx).Into(&networkPolicies)
 	if err != nil {
 		log.WithError(err).Info("Unable to list K8s Network Policy resources")
