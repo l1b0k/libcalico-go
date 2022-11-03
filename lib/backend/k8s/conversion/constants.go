@@ -36,6 +36,9 @@ const (
 	// on older Pods.
 	AnnotationContainerID = "cni.projectcalico.org/containerID"
 
+	// AnnotationAliyunPodIPs is the annotation set by the Aliyun CNI plugin.
+	AnnotationAliyunPodIPs = "k8s.aliyun.com/pod-ips"
+
 	// NameLabel is a label that can be used to match a serviceaccount or namespace
 	// name exactly.
 	NameLabel = "projectcalico.org/name"
